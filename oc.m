@@ -14,7 +14,7 @@ tic
 % construct basis
 % sawtooths of varying frequency
 Nb = block_size; % basis length
-Jb = 100; % number of basis functions
+Jb = 300; % number of basis functions
 B = zeros(Jb, Nb);
 % construct basis by dividing 0-nyquist into equal parts
 for jj=1:Jb
@@ -30,7 +30,7 @@ y_re = zeros(length(y),1);
 n = 1;
 tic
 while n+block_size-1 <= length(y)
-	w = GPSR_BB(y(n:n+block_size-1) .* window, B', 1, 'Verbose', 0);
+	w = GPSR_BB(y(n:n+block_size-1) .* window, B', 1, 'Verbose', 0, 'ToleranceA', 0.1);
 	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
 	
 	n = n + hop_size;
@@ -38,4 +38,3 @@ end
 toc
 
 wavwrite(y_re, fs, 'constrained.wav');
-wavwrite(y, fs, 'orig.wav');
