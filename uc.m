@@ -2,19 +2,21 @@
 
 addpath('GPSR_6.0');
 
-[y fs] = wavread('tracks/al.wav');
+[y fs] = wavread('tracks/ignition.wav');
 y = y(:,1); % take first channel
 
 
 block_size = 1024;
 hop_size = block_size/2;
 window = hanning(block_size);
+weight_a1 = 0.65;
+weight_b0 = 1-weight_a1;;
 
 tic
 % construct basis
 % sawtooths of varying frequency
 Nb = block_size; % basis length
-Jb = 200; % number of basis functions
+Jb = 125; % number of basis functions
 B = zeros(Jb, Nb);
 % construct basis by dividing 0-nyquist into equal parts
 for jj=1:Jb
@@ -28,9 +30,11 @@ toc
 y = [y; zeros(hop_size - mod(length(y),hop_size),1)];
 y_re = zeros(length(y),1);
 n = 1;
+w = zeros(Jb,1);
 tic
 while n+block_size-1 <= length(y)
-	w = GPSR_BB(y(n:n+block_size-1) .* window, B', 0, 'Verbose', 0, 'ToleranceA', 1);
+	w_in = GPSR_BB(y(n:n+block_size-1) .* window, B', 0, 'Verbose', 0, 'ToleranceA', 1);
+	w = w_in*weight_b0 + w*weight_a1;
 	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
 	
 	n = n + hop_size;
