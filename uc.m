@@ -1,4 +1,7 @@
 % uc.m
+% 'complete' demo
+% (read in file, construct basis, solve, write out file)
+
 
 addpath('GPSR_6.0');
 
@@ -14,7 +17,7 @@ weight_b0 = 1-weight_a1;;
 
 tic
 % construct basis
-% sawtooths of varying frequency
+% oscillators of varying frequency
 Nb = block_size; % basis length
 Jb = 125; % number of basis functions
 B = zeros(Jb, Nb);
