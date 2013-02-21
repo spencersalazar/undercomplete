@@ -4,7 +4,7 @@
 
 addpath('bases');
 
-[y fs] = wavread('tracks/bowie.wav');
+[y fs] = wavread('tracks/al.wav');
 y = y(:,1); % take first channel
 
 block_size = 1024;
@@ -15,6 +15,8 @@ B = sawtoothBasis(block_size, 200, fs, 1);
 
 % pad out to hop size
 
-y_re = undercomplete(y, B, block_size, hop_size, window);
+tic
+y_re = undercomplete2(y, B, block_size, hop_size, window, 0.8);
+toc
 
 wavwrite(y_re, fs, 'constrained.wav');

@@ -7,9 +7,8 @@ function [y_re] = undercomplete2(y, B, block_size, hop_size, window, weight_pole
 % L2+L1 optimization is used to determine the optimal weighting for the given 
 % basis.
 %
-% This variant concentrates the energy of each weight bin into the maximum 
-% weighted bin. This may provide a more desirable representation of monophonic 
-% sources. 
+% This variant minimizes variation in magnitude frequency response rather 
+% than in the time domain.  
 % 
 % === REQUIRED ARGUMENTS ===
 % y
@@ -59,11 +58,14 @@ if nargin < 6
 end
 
 addpath('GPSR_6.0');
+addpath('lasso');
 
 weight_a1 = weight_pole;
 weight_b0 = 1-weight_a1;
 
 Jb = size(B,1);
+
+Bfft = abs(fft(B'));
 
 % pad out to hop size
 y = [y; zeros(hop_size - mod(length(y),hop_size),1)];
@@ -72,7 +74,8 @@ n = 1;
 w = zeros(Jb,1);
 
 while n+block_size-1 <= length(y)
-	w_in = GPSR_BB(y(n:n+block_size-1) .* window, B', 0, 'Verbose', 0, 'ToleranceA', 1);
+	Y = fft(y(n:n+block_size-1) .* window);
+	w_in = GPSR_BB(Y, Bfft, 3, 'Verbose', 0, 'ToleranceA', 1);
 	w = w_in*weight_b0 + w*weight_a1;
 	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
 	

@@ -54,6 +54,7 @@ if nargin < 6
 end
 
 addpath('GPSR_6.0');
+addpath('lasso');
 
 weight_a1 = weight_pole;
 weight_b0 = 1-weight_a1;
@@ -67,7 +68,7 @@ n = 1;
 w = zeros(Jb,1);
 
 while n+block_size-1 <= length(y)
-	w_in = GPSR_BB(y(n:n+block_size-1) .* window, B', 0, 'Verbose', 0, 'ToleranceA', 1);
+	w_in = GPSR_BB(y(n:n+block_size-1) .* window, B', 3, 'Verbose', 0, 'ToleranceA', 1);
 	w = w_in*weight_b0 + w*weight_a1;
 	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
 	
