@@ -1,4 +1,4 @@
-function [y_re] = undercomplete2(y, B, block_size, hop_size, window, weight_pole)
+function [y_re] = undercomplete2(y, B, block_size, hop_size, window, weight_pole, l1_opt)
 
 % function [y_re] = undercomplete2(y, B, block_size, hop_size, window, 
 % 	weight_pole)
@@ -34,6 +34,10 @@ function [y_re] = undercomplete2(y, B, block_size, hop_size, window, weight_pole
 % 	Pole location of one-pole filter applied to time-varying basis weights. 
 % 	(default: 0.65)
 % 
+% l1_opt
+% 	Coefficient for L1 optimization (bigger = sparser)
+% 	(default: 3)
+% 
 % === RETURN VALUE ===
 % y_re
 %	Reconstructed output signal.
@@ -56,6 +60,9 @@ end
 if nargin < 6
 	weight_pole = 0.65;
 end
+if nargin < 7
+	l1_opt = 3;
+end
 
 addpath('GPSR_6.0');
 addpath('lasso');
@@ -75,7 +82,7 @@ w = zeros(Jb,1);
 
 while n+block_size-1 <= length(y)
 	Y = fft(y(n:n+block_size-1) .* window);
-	w_in = GPSR_BB(Y, Bfft, 3, 'Verbose', 0, 'ToleranceA', 1);
+	w_in = GPSR_BB(Y, Bfft, l1_opt, 'Verbose', 0, 'ToleranceA', 1);
 	w = w_in*weight_b0 + w*weight_a1;
 	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
 	
