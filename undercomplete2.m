@@ -72,7 +72,7 @@ weight_b0 = 1-weight_a1;
 
 Jb = size(B,1);
 
-Bfft = abs(fft(B'));
+Bfft = 20*log10(abs(fft(B')));
 
 % pad out to hop size
 y = [y; zeros(hop_size - mod(length(y),hop_size),1)];
@@ -81,10 +81,10 @@ n = 1;
 w = zeros(Jb,1);
 
 while n+block_size-1 <= length(y)
-	Y = fft(y(n:n+block_size-1) .* window);
+	Y = 20*log10(abs(fft(y(n:n+block_size-1) .* window)));
 	w_in = GPSR_BB(Y, Bfft, l1_opt, 'Verbose', 0, 'ToleranceA', 1);
 	w = w_in*weight_b0 + w*weight_a1;
-	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w).*window;
+	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
 	
 	n = n + hop_size;
 end

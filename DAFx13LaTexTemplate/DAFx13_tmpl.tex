@@ -141,25 +141,39 @@ If necessary, the features we wish to optimally match are extracted.
 For this project, only DFT magnitude spectrum and time domain signal were matched. 
 The data fitting algorithm is executed given the basis set, the original signal, and some number of tuning parameters. 
 
-While we experimented with a variety of algorithms (see Section \ref{ssec:datafittingalgorithm}), each fundamentally is solving the same problem:
+While we experimented with a variety of algorithms (see Section \ref{ssec:datafittingalgorithm}), each fundamentally solves the same problem:
 \begin{equation}
 \min_{x}: \lVert Ax - y \rVert ^2_2 + \tau \lVert x \rVert _1
 \end{equation}
 where \(A\) is a matrix of basis vectors, \(x\) is the encoded signal according to that basis set, \(y\) is the windowed source signal, \(\tau\) is a weighting parameter indicating desirability of sparseness of \(x\), \(\lVert v \rVert _2\) denotes the L2 (Euclidean) norm of \(v\), and \(\lVert v \rVert _1\) denotes the L1 norm of \(v\). 
 In the case of fitting the magnitude spectrum of the signal, \(A\) is a matrix of the magnitude spectrum of each basis vector, and \(y\) is the magnitude spectrum of the windowed source signal. 
 
+Once we have determined the optimal encoding \(x\), the reconstructed signal \(\hat{y}\) is formed by simply scaling each basis vector by the corresponding value of \(x\):
+\begin{equation}
+\hat{y} = Ax
+\end{equation}
+The reconstructed signal is overlap-added to the output buffer and the current window position is incremented by the hop size. This process is repeated until the end of the signal is reached; the fully resynthesized signal is the content of the overlap-add buffer. 
+
 \subsection{Basis Set}
 \label{ssec:basisset}
 We have developed two different types of basis sets: uniform oscillator basis sets and non-uniform sampled basis sets. 
-Uniform oscillator basis evenly distributes a number of standard oscillators (sawtooth, square wave, etc.) over a typically frequency range. 
-Non-uniform sampled 
+A uniform oscillator basis evenly distributes a number of standard oscillators (sawtooth, square wave, etc.) over a typically frequency range. 
+A non-uniform sampled basis constructs a basis out of recorded sampled signals, generally of differing lengths, and which are unlikely to fully represent all possible frequency content of a generic source signal. 
+
+In general, it is easier to construct a uniform oscillator basis set that will yield results that can be recognized as the original. 
+This follows somewhat readily from intuition, as it is relatively easy to construct a basis set using oscillators and frequencies that are suspected to match well to a variety of source signals. 
+
+With non-uniform sampled bases it is rather more difficult to produce satisfactory results, based on subjective listening. 
+Firstly, not just any set of samples can adequately reconstruct a given source signal. 
+At the very least, the basis set must have similarities in pitch and frequency content. 
+One data set 
 
 \subsection{Data Fitting Algorithms}
 \label{ssec:datafittingalgorithm}
 
+\cite{figueiredo2007gradient}
 
 %\newpage
-\nocite{*}
 \bibliographystyle{IEEEbib}
 \bibliography{DAFx13_tmpl} % requires file DAFx13_tmpl.bib
 

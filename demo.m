@@ -18,8 +18,8 @@ window = hanning(block_size);
 % wav file basis
 % B = wavBasis('bases/spanish-phonemes');
 % B = wavBasis('bases/alto-sax-free-jazz');
-B = wavBasis('bases/piano');
-block_size = floor(size(B,2)/4);
+B = wavBasis('bases/piano2');
+block_size = floor(size(B,2)/2);
 hop_size = floor(block_size/16);
 window = hanning(block_size);
 % truncate basis vectors to block_size
@@ -28,7 +28,7 @@ B = B(:,1:block_size);
 % pad out to hop size
 
 tic
-y_re = undercomplete2(y, B, block_size, hop_size, window, 0.8, 4);
+y_re = undercomplete2(y, B, block_size, hop_size, window, 0.0, 10);
 toc
 
 wavwrite(y_re, fs, 'constrained.wav');

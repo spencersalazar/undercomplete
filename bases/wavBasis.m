@@ -1,4 +1,4 @@
-function [B] = wavBasis(directory, Jb)
+function [B] = wavBasis(directory, Nb)
 
 %directory = 'bases/spanish-phonemes';
 
@@ -7,11 +7,12 @@ function [B] = wavBasis(directory, Jb)
 % 
 %Nb = 0;
 if nargin < 2
-	Nb = 0;
+	Nb = -1;
 end
 
 paths = {};
 max_size = 0;
+sum_size = 0;
 dirlist = dir(directory);
 for ii = 1:length(dirlist)
 	[pathstr filename ext] = fileparts(dirlist(ii).name);
@@ -22,12 +23,17 @@ for ii = 1:length(dirlist)
 		if samps > max_size
 			max_size = samps;
 		end
+		sum_size = sum_size + samps;
 		paths{end+1} = thepath;
 	end
 end
 
-if Nb == 0
+if Nb == 0 % max size
 	Nb = max_size;
+end
+
+if Nb == -1 % average size
+	Nb = floor(sum_size / length(paths));
 end
 
 B = zeros(length(paths), Nb);
