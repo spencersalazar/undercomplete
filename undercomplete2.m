@@ -84,7 +84,7 @@ while n+block_size-1 <= length(y)
 	Y = fft(y(n:n+block_size-1) .* window);
 	w_in = GPSR_BB(Y, Bfft, l1_opt, 'Verbose', 0, 'ToleranceA', 1);
 	w = w_in*weight_b0 + w*weight_a1;
-	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w);
+	y_re(n:n+block_size-1) = y_re(n:n+block_size-1) + (B'*w).*window;
 	
 	n = n + hop_size;
 end

@@ -1,0 +1,166 @@
+% Template LaTeX file for DAFx-10 papers
+%
+% To generate the correct references using BibTeX, run
+%     latex, bibtex, latex, latex
+% modified...
+% - from DAFx-00 to DAFx-02 by Florian Keiler, 2002-07-08
+% - from DAFx-02 to DAFx-03 by Gianpaolo Evangelista
+% - from DAFx-05 to DAFx-06 by Vincent Verfaille, 2006-02-05
+% - from DAFx-06 to DAFx-07 by Vincent Verfaille, 2007-01-05
+%                          and Sylvain Marchand, 2007-01-31
+% - from DAFx-07 to DAFx-08 by Henri Penttinen, 2007-12-12
+%                          and Jyri Pakarinen 2008-01-28
+% - from DAFx-08 to DAFx-09 by Giorgio Prandi, Fabio Antonacci 2008-10-03
+% - from DAFx-09 to DAFx-10 by Hannes Pomberger 2010-02-01
+% - from DAFx-10 to DAFx-12 by Jez Wells 2011
+%
+% Template with hyper-references (links) active after conversion to pdf
+% (with the distiller) or if compiled with pdflatex.
+%
+% 20060205: added package 'hypcap' to correct hyperlinks to figures and tables
+%                      use of \papertitle and \paperauthorA, etc for same title in PDF and Metadata
+%
+% 1) Please compile using latex or pdflatex.
+% 2) If using pdflatex, you need your figures in a file format other than eps! e.g. png or jpg is working
+% 3) Please use "paperftitle" and "pdfauthor" definitions below
+
+%------------------------------------------------------------------------------------------
+%  !  !  !  !  !  !  !  !  !  !  !  ! user defined variables  !  !  !  !  !  !  !  !  !  !  !  !  !  !
+% Please use these commands to define title and author of the paper:
+\def\papertitle{Undercomplete Basis Functions for Creative Signal Reconstruction}
+\def\paperauthorA{Spencer Salazar}
+
+
+%------------------------------------------------------------------------------------------
+\documentclass[twoside,a4paper]{article}
+\usepackage{dafx_13}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{euscript}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ifpdf}
+
+\usepackage[english]{babel}
+\usepackage[textfont=it]{caption}
+\usepackage{subfig, color}
+
+\setcounter{page}{1}
+\ninept
+
+\usepackage{times}
+% Saves a lot of ouptut space in PDF... after conversion with the distiller
+% Delete if you cannot get PS fonts working on your system.
+
+% pdf-tex settings: detect automatically if run by latex or pdflatex
+\newif\ifpdf
+\ifx\pdfoutput\relax
+\else
+   \ifcase\pdfoutput
+      \pdffalse
+   \else
+      \pdftrue
+\fi
+
+\ifpdf % compiling with pdflatex
+  \usepackage[pdftex,
+    pdftitle={\papertitle},
+    pdfauthor={\paperauthorA},
+    colorlinks=false, % links are activated as colror boxes instead of color text
+    bookmarksnumbered, % use section numbers with bookmarks
+    pdfstartview=XYZ % start with zoom=100% instead of full screen; especially useful if working with a big screen :-)
+  ]{hyperref}
+  \pdfcompresslevel=9
+  \usepackage[pdftex]{graphicx}
+  \usepackage[figure,table]{hypcap}
+\else % compiling with latex
+  \usepackage[dvips]{epsfig,graphicx}
+  \usepackage[dvips,
+    colorlinks=false, % no color links
+    bookmarksnumbered, % use section numbers with bookmarks
+    pdfstartview=XYZ % start with zoom=100% instead of full screen
+  ]{hyperref}
+  % hyperrefs are active in the pdf file after conversion
+  \usepackage[figure,table]{hypcap}
+\fi
+
+\title{\papertitle}
+
+%-------------SINGLE-AUTHOR HEADER STARTS (uncomment below if your paper has a single author)-----------------------
+\affiliation{
+\paperauthorA}
+{\href{https://ccrma.stanford.edu/}{Center for Computer Research in Music and Acoustics} \\ Stanford University\\ Stanford, California \\
+{\tt \href{mailto:spencer@ccrma.stanford.edu}{spencer@ccrma.stanford.edu}}
+}
+%-----------------------------------SINGLE-AUTHOR HEADER ENDS------------------------------------------------------
+
+\begin{document}
+% more pdf-tex settings:
+\ifpdf % used graphic file format for pdflatex
+  \DeclareGraphicsExtensions{.png,.jpg,.pdf}
+\else  % used graphic file format for latex
+  \DeclareGraphicsExtensions{.eps}
+\fi
+
+\maketitle
+
+\begin{abstract}
+Sparse coding and compressed sensing techniques have found a variety of uses in efficient signal encoding and compression. 
+However these efforts typically seek to reconstruct a given signal with high-fidelity, and in the ideal case, with little to no perceptual variation from the original signal. 
+In this project, we extended techniques for optimal L2+L1 norm sparse coding to retain characteristics of both the encoding basis set and the original input signals, for use as an effect in creative music applications. 
+In this way, source signals can seem to be "recreated" or "remixed" by a different set of musical primitives, e.g. a symphony orchestra recreated by a 1980s video game console. 
+\end{abstract}
+
+\section{Concept}
+
+Sparse coding and compressed sensing schemes encode a signal by projecting it on to a non-orthogonal basis set. 
+Such bases are often supersets of a mathematically \emph{complete} basis, such as the Fourier basis. 
+In cases such as these, the basis set is known as \emph{overcomplete}. 
+Determining the representation under a given basis set is easily represented as a problem in various data fitting algorithms, such as various least-squares optimization algorithms or linear programming. 
+Compressed sensing, being concerned with optimal sparsity, typically uses data fitting algorithms that optimize both the L2 and L1 norms. 
+Optimizing the L1 norm favors solutions that have fewer non-zero components, allowing for greater compressability via traditional methods. 
+
+We define an \emph{undercomplete} basis as one that mathematically is neither complete nor orthogonal. 
+Projection of a signal on to an undercomplete basis will necessarily result in loss of data. 
+However, reconstruction from the undercomplete encoding will heavily reflect musical characteristics of the underlying basis set. 
+Depending on how close to complete the basis set is, and parameters of the data fitting algorithm used, the reconstruction will also retain salient musical characteristics of the source signal, thus combining characteristics of both the source and the basis set. 
+While undercomplete reconstruction is unsatisfactory for general signal encoding and compression, it presents a number of possible artistic uses. 
+For example, one might project/reconstruct a speech signal onto a basis set of piano notes, resulting in a "talking piano", or project/reconstruct a symphony orchestra onto a set of sawtooth waves, recreating the symphonic work a la an inexpensive vintage digital synthesizer. 
+
+In the case where we wish to preserve musical characteristics that are quantifiable (e.g. overall spectrum, spectral envelope, spectral peaks), our data fitting algorithm is sufficiently flexible that these characteristics can be optimized for. 
+In this project, we developed algorithms to fit both time-domain and frequency-domain representations of the signal.
+Based on our subjective listening of test signals, fitting the frequency-domain representation of the signal to the frequency-domain representation of the basis set produced a more musically recognizable reconstruction of the source signal. 
+Attempting to best-fit other perceptually relevant characteristics of the signal, such as MFCCs or spectral peaks, presents an interesting avenue for further research. 
+
+\section{Technique}
+
+Initially we create a basis set to use for signal encoding and reconstruction. 
+The manner in which these basis sets varies (see Section \ref{ssec:basisset}), but the result set is a collection of time-domain audio signals. 
+Next we window the input signal according to a uniform block size. 
+(The block size chosen depends largely on the length, or average length, of the basis set vectors.) 
+If necessary, the features we wish to optimally match are extracted. 
+For this project, only DFT magnitude spectrum and time domain signal were matched. 
+The data fitting algorithm is executed given the basis set, the original signal, and some number of tuning parameters. 
+
+While we experimented with a variety of algorithms (see Section \ref{ssec:datafittingalgorithm}), each fundamentally is solving the same problem:
+\begin{equation}
+\min_{x}: \lVert Ax - y \rVert ^2_2 + \tau \lVert x \rVert _1
+\end{equation}
+where \(A\) is a matrix of basis vectors, \(x\) is the encoded signal according to that basis set, \(y\) is the windowed source signal, \(\tau\) is a weighting parameter indicating desirability of sparseness of \(x\), \(\lVert v \rVert _2\) denotes the L2 (Euclidean) norm of \(v\), and \(\lVert v \rVert _1\) denotes the L1 norm of \(v\). 
+In the case of fitting the magnitude spectrum of the signal, \(A\) is a matrix of the magnitude spectrum of each basis vector, and \(y\) is the magnitude spectrum of the windowed source signal. 
+
+\subsection{Basis Set}
+\label{ssec:basisset}
+We have developed two different types of basis sets: uniform oscillator basis sets and non-uniform sampled basis sets. 
+Uniform oscillator basis evenly distributes a number of standard oscillators (sawtooth, square wave, etc.) over a typically frequency range. 
+Non-uniform sampled 
+
+\subsection{Data Fitting Algorithms}
+\label{ssec:datafittingalgorithm}
+
+
+%\newpage
+\nocite{*}
+\bibliographystyle{IEEEbib}
+\bibliography{DAFx13_tmpl} % requires file DAFx13_tmpl.bib
+
+\end{document}
